@@ -5,7 +5,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import * as XLSX from "xlsx";
 const { Option } = Select;
 
-const Productlist = () => {
+const Accountlist = () => {
   const [showStudentID, setShowStudentID] = useState(true); // State to toggle StudentID column
 
   const columns = [
@@ -62,6 +62,24 @@ const Productlist = () => {
       ),
     },
   ].filter(Boolean); // Remove undefined columns from the array
+
+  const columns1 = [
+    {
+      title: "ANo",
+      dataIndex: "key",
+    },
+    {
+      title: "StudentID",
+      dataIndex: "studentid",
+      sorter: (a, b) => a.studentid.length - b.studentid.length,
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      sorter: (a, b) => a.name.length - b.name.length,
+    },
+
+  ]
 
   useEffect(() => {
     // Fetch data or any other initial setup if needed
@@ -132,6 +150,10 @@ const Productlist = () => {
   if (verifiedFilter !== null) {
     dataToDisplay = dataToDisplay.filter((item) => item.verified === verifiedFilter);
   }
+
+  const [uploadedData, setUploadedData] = useState([]);
+
+
   const handleFileUpload = (file) => {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -143,15 +165,13 @@ const Productlist = () => {
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
       const formattedData = jsonData.map((row, index) => ({
         key: index + 1,
-        name: row[1] || "Unknown",
-        email: row[2] || "Unknown",
-        studentid: row[3] || "N/A",
-        status: row[4] || "N/A",
-        verified: row[5] || false
+        email: row[0] || "Unknown",
+        studentid: row[1] || "N/A",
+
       }));
 
       // Cập nhật state mới với dữ liệu từ file Excel
-      setFilteredData(formattedData);
+      setUploadedData(formattedData);
       // Cập nhật state mới với dữ liệu từ file Excel
       message.success('File uploaded successfully!');
     };
@@ -199,10 +219,15 @@ const Productlist = () => {
         </Button>
       </div>
       <div>
-        <Table columns={columns} dataSource={dataToDisplay} pagination={{ pageSize: 5 }} />
+
+        {uploadedData.length > 0 ? (
+          <div>
+            <Table columns={columns1} dataSource={uploadedData} pagination={{ pageSize: 5 }} />
+          </div>
+        ) : <Table columns={columns} dataSource={dataToDisplay} pagination={{ pageSize: 5 }} />}
       </div>
     </div>
   );
 };
 
-export default Productlist;
+export default Accountlist;
