@@ -3,10 +3,12 @@ import { Table, Select, Button, Upload, message } from "antd";
 import { Link } from "react-router-dom";
 import { UploadOutlined } from '@ant-design/icons';
 import * as XLSX from "xlsx";
+import axios from "axios";
 const { Option } = Select;
 
 const Accountlist = () => {
   const [showStudentID, setShowStudentID] = useState(true); // State to toggle StudentID column
+  const [filteredData, setFilteredData] = useState([]);
 
   const columns = [
     {
@@ -82,40 +84,34 @@ const Accountlist = () => {
   ]
 
   useEffect(() => {
-    // Fetch data or any other initial setup if needed
-    // For now, let's create some static dummy data
-    const staticData = [
-      {
-        key: 1,
-        name: "John Doe",
-        email: "kinhthanh@gmail.com",
-        studentid: "STU123",
-        status: "active",
-        verified: true,
-      },
-      {
-        key: 2,
-        name: "Jane Smith",
-        email: "vanthat@gmail.com",
-        studentid: "STU456",
-        status: "banned",
-        verified: false,
-      },
-      // Add more similar data items as needed
-      // {
-      //   key: 3,
-      //   name: "Alice Johnson",
-      //   studentid: "STU789",
-      //   status: "verified",
-      //   verified: true,
-      // },
-      // More items...
-    ];
+    const token = localStorage.getItem('token');
+    const axiosConfig = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
 
-    setFilteredData(staticData); // Set the initial data
+    // Fetch data from API
+    axios.get("http://localhost:3001/api/users", axiosConfig)
+      .then((res) => {
+        console.log(res.data);
+        const formattedData = res.data.data.map((item, index) => ({
+          key: index + 1,
+          name: item.full_name,
+          email: item.email,
+          studentid: item.student_id || "N/A",
+          status: item.status ? "active" : "banned",
+          verified: item.is_verified,
+        }));
+        console.log(formattedData);
+        setFilteredData(formattedData);
+      })
+      .catch((error) => {
+        console.error('Error fetching user data:', error);
+        // Handle error
+      });
   }, []);
 
-  const [filteredData, setFilteredData] = useState([]);
 
   const handleBan = (key) => {
     const updatedData = filteredData.map((item) =>
