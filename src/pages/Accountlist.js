@@ -56,9 +56,15 @@ const Accountlist = () => {
       render: (text, record) => (
         <span>
           {record.status === "active" ? (
-            <Button onClick={() => handleBan(record.key)}>Ban</Button>
+            <Button onClick={() => {
+              handleBan(record.key);
+              updateBan(record.id);
+            }}>Ban</Button>
           ) : (
-            <Button onClick={() => handleUnban(record.key)}>Unban</Button>
+            <Button onClick={() => {
+              handleUnban(record.key);
+              updateUnban(record.id);
+            }}>Unban</Button>
           )}
         </span>
       ),
@@ -102,12 +108,12 @@ const Accountlist = () => {
           studentid: item.student_id || "N/A",
           status: item.status ? "active" : "banned",
           verified: item.is_verified,
+          id: item._id
         }));
         console.log(formattedData);
         setFilteredData(formattedData);
       })
       .catch((error) => {
-        console.error('Error fetching user data:', error);
         // Handle error
       });
   }, []);
@@ -118,6 +124,42 @@ const Accountlist = () => {
       item.key === key ? { ...item, status: "banned" } : item
     );
     setFilteredData(updatedData);
+  };
+
+  const updateBan = (id) => {
+    const token = localStorage.getItem('token');
+    const axiosConfig = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+
+    // Fetch data from API
+    axios.patch(`http://localhost:3001/api/users/${id}/banned`, null, axiosConfig)
+      .then((res) => {
+        // Xử lý dữ liệu trả về nếu cần
+      })
+      .catch((error) => {
+        // Xử lý lỗi
+      });
+  };
+
+  const updateUnban = (id) => {
+    const token = localStorage.getItem('token');
+    const axiosConfig = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+
+    // Fetch data from API
+    axios.patch(`http://localhost:3001/api/users/${id}/unbanned`, null, axiosConfig)
+      .then((res) => {
+        // Xử lý dữ liệu trả về nếu cần
+      })
+      .catch((error) => {
+        // Xử lý lỗi
+      });
   };
 
   const handleUnban = (key) => {

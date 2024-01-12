@@ -23,9 +23,13 @@ function AuthProvider({ children }) {
 
   useLayoutEffect(() => {
     if (!token) return;
-
+    const axiosConfig = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
     axios
-      .get("/users/profile", {})
+      .get("http://localhost:3001/api/users/profile", axiosConfig)
       .then((res) => {
         setUser(res.data.data);
       })

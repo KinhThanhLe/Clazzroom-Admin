@@ -1,42 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Table, Select, DatePicker, Input } from "antd";
-
+import { Table, Select, DatePicker, Input, Button } from "antd";
+import axios from "axios";
+import moment from 'moment';
 
 const { Option } = Select;
 
-const columns = [
-  {
-    title: "SNo",
-    dataIndex: "key",
-  },
-  {
-    title: "Name",
-    dataIndex: "name",
-    sorter: (a, b) => a.name.length - b.name.length,
-  },
-  {
-    title: "Created at",
-    dataIndex: "date",
-    sorter: (a, b) => new Date(a.date) - new Date(b.date),
-  },
-  {
-    title: "Owner",
-    dataIndex: "owner",
-    filters: [], // Filters will be applied here
-    onFilter: (value, record) => record.owner === value,
-    render: (text) => <span>{text}</span>,
-  },
-  {
-    title: "Status",
-    dataIndex: "status",
-    filters: [
-      { text: "Active", value: "active" },
-      { text: "Inactive", value: "inactive" },
-    ],
-    onFilter: (value, record) => record.status === value,
-    render: (text) => <span>{text}</span>,
-  },
-];
+
 
 const Classes = () => {
   const [ownerFilter, setOwnerFilter] = useState(null);
@@ -44,9 +13,84 @@ const Classes = () => {
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
   const [searchOwner, setSearchOwner] = useState('');
+  const [filteredData, setFilteredData] = useState([]);
+
+  const columns = [
+    {
+      title: "SNo",
+      dataIndex: "key",
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      sorter: (a, b) => a.name.length - b.name.length,
+    },
+    {
+      title: "Created at",
+      dataIndex: "date",
+      sorter: (a, b) => new Date(a.date) - new Date(b.date),
+    },
+    {
+      title: "Owner",
+      dataIndex: "owner",
+      filters: [], // Filters will be applied here
+      onFilter: (value, record) => record.owner === value,
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      filters: [
+        { text: "Active", value: "active" },
+        { text: "Inactive", value: "inactive" },
+      ],
+      onFilter: (value, record) => record.status === value,
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      render: (text, record) => (
+        <span>
+          {record.status === "active" ? (
+            <Button onClick={() => {
+              handleSetInactive(record.key);
+              updateInactive(record.id)
+            }}>SetInactive</Button>
+          ) : (
+            <Button onClick={() => {
+              handleSetActive(record.key);
+              updateActive(record.id)
+            }}>SetActive</Button>
+          )}
+        </span>
+      ),
+    },
+  ];
 
   useEffect(() => {
-    // dispatch(getUsers());
+    const token = localStorage.getItem('token');
+    const axiosConfig = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+
+    axios.get("http://localhost:3001/api/classes/admin/allClass", axiosConfig)
+      .then((res) => {
+        const formattedData = res.data.data.map((item, index) => ({
+          key: index + 1,
+          name: item.class_name,
+          date: moment(item.createdAt).format('DD-MM-YYYY'),
+          owner: item.owner.full_name,
+          status: item.status,
+          id: item._id
+        }));
+        setFilteredData(formattedData);
+      })
+      .catch((error) => {
+        console.error('Error fetching class data:', error);
+      });
   }, []);
   // ...
 
@@ -55,7 +99,59 @@ const Classes = () => {
   };
 
   const handleStatusFilter = (value) => {
-    setStatusFilter(value === "all" ? null : value); // Check if 'all' is selected
+    setStatusFilter(value === "all" ? null : value);
+  };
+
+  const updateInactive = (id) => {
+    const token = localStorage.getItem('token');
+    const axiosConfig = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+
+    // Fetch data from API
+    axios.patch(`http://localhost:3001/api/classes/${id}/inactive`, null, axiosConfig)
+      .then((res) => {
+        // Xử lý dữ liệu trả về nếu cần
+      })
+      .catch((error) => {
+        // Xử lý lỗi
+      });
+  };
+
+  const updateActive = (id) => {
+    const token = localStorage.getItem('token');
+    const axiosConfig = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+
+    // Fetch data from API
+    axios.patch(`http://localhost:3001/api/classes/${id}/active`, null, axiosConfig)
+      .then((res) => {
+        // Xử lý dữ liệu trả về nếu cần
+      })
+      .catch((error) => {
+        // Xử lý lỗi
+      });
+  };
+
+  const handleSetActive = (key) => {
+
+    const updatedData = filteredData.map((item) =>
+      item.key === key ? { ...item, status: "active" } : item
+    );
+    setFilteredData(updatedData);
+  };
+
+  const handleSetInactive = (key) => {
+
+    const updatedData = filteredData.map((item) =>
+      item.key === key ? { ...item, status: "inactive" } : item
+    );
+    setFilteredData(updatedData);
   };
 
   const handleDateChange = (dates) => {
@@ -70,103 +166,29 @@ const Classes = () => {
   const handleSearchOwner = (e) => {
     setSearchOwner(e.target.value);
   };
-  const staticData = [
-    {
-      key: 1,
-      name: 'John Doe',
-      date: '2023-12-25',
-      owner: 'Owner A',
-      status: 'active',
-    },
-    {
-      key: 2,
-      name: 'Jane Smith',
-      date: '2023-11-15',
-      owner: 'Owner B',
-      status: 'inactive',
-    },
-    {
-      key: 3,
-      name: 'Alice Johnson',
-      date: '2023-10-20',
-      owner: 'Owner C',
-      status: 'active',
-    },
-    {
-      key: 4,
-      name: 'Bob Brown',
-      date: '2023-09-05',
-      owner: 'Owner D',
-      status: 'inactive',
-    },
-    {
-      key: 5,
-      name: 'Eva Williams',
-      date: '2023-08-12',
-      owner: 'Owner E',
-      status: 'active',
-    },
-    {
-      key: 6,
-      name: 'Michael Clark',
-      date: '2023-07-18',
-      owner: 'Owner F',
-      status: 'inactive',
-    },
-    {
-      key: 7,
-      name: 'Olivia Garcia',
-      date: '2023-06-30',
-      owner: 'Owner G',
-      status: 'active',
-    },
-    {
-      key: 8,
-      name: 'Sophia Martinez',
-      date: '2023-05-22',
-      owner: 'Owner H',
-      status: 'inactive',
-    },
-    {
-      key: 9,
-      name: 'William Lee',
-      date: '2023-04-11',
-      owner: 'Owner I',
-      status: 'active',
-    },
-    {
-      key: 10,
-      name: 'David Nguyen',
-      date: '2023-03-07',
-      owner: 'Owner J',
-      status: 'inactive',
-    },
-  ];
 
-
-  // Filtered data based on applied filters
-  let filteredData = staticData;
+  let dataToDisplay = filteredData;
 
   if (ownerFilter) {
-    filteredData = filteredData.filter((item) => item.owner === ownerFilter);
+    dataToDisplay = dataToDisplay.filter((item) => item.owner === ownerFilter);
   }
 
-  if (statusFilter !== null) { // Check if status filter is applied or not
-    filteredData = filteredData.filter((item) =>
+  if (statusFilter !== null) {
+    dataToDisplay = dataToDisplay.filter((item) =>
       item.status === statusFilter
     );
   }
 
   if (fromDate && toDate) {
-    filteredData = filteredData.filter(
+    dataToDisplay = dataToDisplay.filter(
       (item) =>
         new Date(item.date) >= fromDate && new Date(item.date) <= toDate
     );
   }
 
   if (searchOwner) {
-    filteredData = filteredData.filter((item) =>
-      item.owner.toLowerCase().includes(searchOwner.toLowerCase())
+    dataToDisplay = dataToDisplay.filter((item) =>
+      item.owner?.toLowerCase().includes(searchOwner.toLowerCase())
     );
   }
   return (
@@ -193,7 +215,7 @@ const Classes = () => {
         <DatePicker.RangePicker onChange={handleDateChange} />
       </div>
       <div>
-        <Table columns={columns} dataSource={filteredData} pagination={{ pageSize: 5 }} />
+        <Table columns={columns} dataSource={dataToDisplay} pagination={{ pageSize: 5 }} />
       </div>
     </div>
   );
