@@ -48,7 +48,6 @@ const Addproduct = () => {
       setErrors(newErrors);
     } else {
       // If no errors, handle sending data or any other action here
-      console.log(values);
       const newUser = {
         full_name: values.fullName,
         email: values.email,

@@ -205,9 +205,9 @@ const Classes = () => {
           style={{ width: 120, marginRight: 8 }}
           placeholder="Select Status"
           onChange={handleStatusFilter}
-          allowClear  // Add allowClear to enable clearing the select
+          allowClear
         >
-          <Option value="all">All</Option> {/* Add an option for 'All' */}
+          <Option value="all">All</Option>
           <Option value="active">Active</Option>
           <Option value="inactive">Inactive</Option>
         </Select>

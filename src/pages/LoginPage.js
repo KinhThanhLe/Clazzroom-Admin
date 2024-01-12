@@ -36,17 +36,6 @@ function LoginPage() {
       });
   }
 
-  // const LoginButton = () => {
-  //   const { loginWithRedirect } = useAuth0();
-  //   return (
-  //     <button
-  //       className="btn btn-primary btn-block"
-  //       onClick={() => loginWithRedirect()}
-  //     >
-  //       Log In
-  //     </button>
-  //   );
-  // };
 
   function onSubmit(data) {
     login("basic", data, (error) => {

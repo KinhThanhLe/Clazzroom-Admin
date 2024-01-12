@@ -100,7 +100,6 @@ const Accountlist = () => {
     // Fetch data from API
     axios.get("http://localhost:3001/api/users", axiosConfig)
       .then((res) => {
-        console.log(res.data);
         const formattedData = res.data.data.map((item, index) => ({
           key: index + 1,
           name: item.full_name,
