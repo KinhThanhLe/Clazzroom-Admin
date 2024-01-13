@@ -79,12 +79,10 @@ const Accountlist = () => {
     {
       title: "StudentID",
       dataIndex: "studentid",
-      sorter: (a, b) => a.studentid.length - b.studentid.length,
     },
     {
       title: "Email",
       dataIndex: "email",
-      sorter: (a, b) => a.name.length - b.name.length,
     },
 
   ]
