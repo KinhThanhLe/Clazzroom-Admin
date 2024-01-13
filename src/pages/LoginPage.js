@@ -17,7 +17,7 @@ function LoginPage() {
   const navigate = useNavigate();
 
   function login(method, data, errorHandler) {
-    const url = "http://13.236.44.51:3001/api/users/login";
+    const url = "http://localhost:3001/api/users/login";
     setSending(true);
     axios
       .post(url, data)
