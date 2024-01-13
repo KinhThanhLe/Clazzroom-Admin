@@ -23,7 +23,6 @@ function LoginPage() {
       .post(url, data)
       .then((res) => {
         loginToContext(res.data.data);
-        console.log(res.data.data);
         navigate("/admin/classes");
 
       })

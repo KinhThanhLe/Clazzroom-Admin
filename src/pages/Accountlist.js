@@ -107,7 +107,6 @@ const Accountlist = () => {
           verified: item.is_verified,
           id: item._id
         }));
-        console.log(formattedData);
         setFilteredData(formattedData);
       })
       .catch((error) => {
