@@ -55,7 +55,7 @@ const Addproduct = () => {
         role: "admin",
       };
       axios
-        .post("https://13.236.44.51:3001/api/users/register", newUser)
+        .post("http://13.236.44.51:3001/api/users/register", newUser)
         .then((res) => {
           navigate("/admin/list-account");
         })
