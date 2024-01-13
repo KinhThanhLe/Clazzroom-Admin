@@ -96,7 +96,7 @@ const Accountlist = () => {
     };
 
     // Fetch data from API
-    axios.get("http://localhost:3001/api/users", axiosConfig)
+    axios.get("http://13.236.44.51:3001/api/users", axiosConfig)
       .then((res) => {
         const formattedData = res.data.data.map((item, index) => ({
           key: index + 1,
@@ -131,7 +131,7 @@ const Accountlist = () => {
     };
 
     // Fetch data from API
-    axios.patch(`http://localhost:3001/api/users/${id}/banned`, null, axiosConfig)
+    axios.patch(`http://13.236.44.51:3001/api/users/${id}/banned`, null, axiosConfig)
       .then((res) => {
         // Xử lý dữ liệu trả về nếu cần
       })
@@ -149,7 +149,7 @@ const Accountlist = () => {
     };
 
     // Fetch data from API
-    axios.patch(`http://localhost:3001/api/users/${id}/unbanned`, null, axiosConfig)
+    axios.patch(`http://13.236.44.51:3001/api/users/${id}/unbanned`, null, axiosConfig)
       .then((res) => {
         // Xử lý dữ liệu trả về nếu cần
       })
