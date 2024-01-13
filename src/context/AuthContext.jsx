@@ -29,7 +29,7 @@ function AuthProvider({ children }) {
       }
     };
     axios
-      .get("http://13.236.44.51:3001/api/users/profile", axiosConfig)
+      .get("https://13.236.44.51:3001/api/users/profile", axiosConfig)
       .then((res) => {
         setUser(res.data.data);
       })

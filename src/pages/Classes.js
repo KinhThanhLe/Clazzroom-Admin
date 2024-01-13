@@ -76,7 +76,7 @@ const Classes = () => {
       }
     };
 
-    axios.get("http://13.236.44.51:3001/api/classes/admin/allClass", axiosConfig)
+    axios.get("https://13.236.44.51:3001/api/classes/admin/allClass", axiosConfig)
       .then((res) => {
         const formattedData = res.data.data.map((item, index) => ({
           key: index + 1,
@@ -111,7 +111,7 @@ const Classes = () => {
     };
 
     // Fetch data from API
-    axios.patch(`http://13.236.44.51:3001/api/classes/${id}/inactive`, null, axiosConfig)
+    axios.patch(`https://13.236.44.51:3001/api/classes/${id}/inactive`, null, axiosConfig)
       .then((res) => {
         // Xử lý dữ liệu trả về nếu cần
       })
@@ -129,7 +129,7 @@ const Classes = () => {
     };
 
     // Fetch data from API
-    axios.patch(`http://13.236.44.51:3001/api/classes/${id}/active`, null, axiosConfig)
+    axios.patch(`https://13.236.44.51:3001/api/classes/${id}/active`, null, axiosConfig)
       .then((res) => {
         // Xử lý dữ liệu trả về nếu cần
       })
